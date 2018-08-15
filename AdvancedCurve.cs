@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Hypnagogia.BezierCurve
@@ -6,9 +8,16 @@ namespace Hypnagogia.BezierCurve
     public class AdvancedCurve : MonoBehaviour
     {
         [SerializeField] Vector3[] points;
-        [SerializeField] BezierControlPointMode[] modes;
+
+//        [SerializeField]
+//        BezierControlPointMode[] modes
+//        {
+//            get { return nodes.Select(x => x.mode).ToArray(); }
+//        }
         [SerializeField] bool loop;
 
+        [SerializeField] List<Node> nodes = new List<Node>();
+        
         public bool Loop
         {
             get { return loop; }
@@ -17,7 +26,7 @@ namespace Hypnagogia.BezierCurve
                 loop = value;
                 if (value == true)
                 {
-                    modes[modes.Length - 1] = modes[0];
+                    nodes[nodes.Count - 1].mode = nodes[0].mode;
                     SetControlPoint(0, points[0]);
                 }
             }
@@ -78,22 +87,22 @@ namespace Hypnagogia.BezierCurve
 
         public BezierControlPointMode GetControlPointMode(int index)
         {
-            return modes[(index + 1) / 3];
+            return nodes[(index + 1) / 3].mode;
         }
 
         public void SetControlPointMode(int index, BezierControlPointMode mode)
         {
             int modeIndex = (index + 1) / 3;
-            modes[modeIndex] = mode;
+            nodes[modeIndex].mode = mode;
             if (loop)
             {
                 if (modeIndex == 0)
                 {
-                    modes[modes.Length - 1] = mode;
+                    nodes[nodes.Count- 1].mode = mode;
                 }
-                else if (modeIndex == modes.Length - 1)
+                else if (modeIndex == nodes.Count - 1)
                 {
-                    modes[0] = mode;
+                    nodes[0].mode = mode;
                 }
             }
 
@@ -103,8 +112,8 @@ namespace Hypnagogia.BezierCurve
         void EnforceMode(int index)
         {
             int modeIndex = (index + 1) / 3;
-            BezierControlPointMode mode = modes[modeIndex];
-            if (mode == BezierControlPointMode.Free || !loop && (modeIndex == 0 || modeIndex == modes.Length - 1))
+            BezierControlPointMode mode = nodes[modeIndex].mode;
+            if (mode == BezierControlPointMode.Free || !loop && (modeIndex == 0 || modeIndex == nodes.Count - 1))
             {
                 return;
             }
@@ -201,6 +210,7 @@ namespace Hypnagogia.BezierCurve
 
         public void AddCurve()
         {
+            nodes.Add(new Node());
             Vector3 point = points[points.Length - 1];
             Array.Resize(ref points, points.Length + 3);
             point.x += 1f;
@@ -210,14 +220,14 @@ namespace Hypnagogia.BezierCurve
             point.x += 1f;
             points[points.Length - 1] = point;
 
-            Array.Resize(ref modes, modes.Length + 1);
-            modes[modes.Length - 1] = modes[modes.Length - 2];
+//            Array.Resize(ref modes, modes.Length + 1);
+            nodes[nodes.Count - 1].mode = nodes[nodes.Count - 2].mode;
             EnforceMode(points.Length - 4);
 
             if (loop)
             {
                 points[points.Length - 1] = points[0];
-                modes[modes.Length - 1] = modes[0];
+                nodes[nodes.Count - 1].mode = nodes[0].mode;
                 EnforceMode(0);
             }
         }
@@ -231,10 +241,16 @@ namespace Hypnagogia.BezierCurve
                 new Vector3(3f, 0f, 0f),
                 new Vector3(4f, 0f, 0f)
             };
-            modes = new BezierControlPointMode[]
+//            modes = new BezierControlPointMode[]
+//            {
+//                BezierControlPointMode.Free,
+//                BezierControlPointMode.Free
+//            };
+            
+            nodes = new List<Node>()
             {
-                BezierControlPointMode.Free,
-                BezierControlPointMode.Free
+                new Node(),
+                new Node()
             };
         }
     }

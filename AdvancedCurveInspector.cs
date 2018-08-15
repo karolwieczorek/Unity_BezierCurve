@@ -25,8 +25,18 @@ namespace Hypnagogia.BezierCurve
         Quaternion handleRotation;
         int selectedIndex = -1;
 
+        bool foldOutDefaultInspector;
+
         public override void OnInspectorGUI()
         {
+            foldOutDefaultInspector = EditorGUILayout.Foldout(foldOutDefaultInspector, "Default Inspector");
+            if (foldOutDefaultInspector)
+            {
+                DrawDefaultInspector();
+                EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            }
+            
+            
             curve = target as AdvancedCurve;
             EditorGUI.BeginChangeCheck();
             bool loop = EditorGUILayout.Toggle("Loop", curve.Loop);
@@ -48,6 +58,7 @@ namespace Hypnagogia.BezierCurve
                 curve.AddCurve();
                 EditorUtility.SetDirty(curve);
             }
+
         }
 
         void DrawSelectedPointInspector()
