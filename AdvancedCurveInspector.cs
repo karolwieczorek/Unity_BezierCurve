@@ -24,7 +24,10 @@ namespace Hypnagogia.BezierCurve
         AdvancedCurve curve;
         Transform handleTransform;
         Quaternion handleRotation;
-        int selectedIndex = -1;
+        static int selectedIndex = -1;
+        
+        static float testPosition;
+        static bool showDirections;
 
         bool foldOutDefaultInspector;
 
@@ -36,7 +39,15 @@ namespace Hypnagogia.BezierCurve
                 DrawDefaultInspector();
                 EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
             }
-            
+
+            var newValue = EditorGUILayout.Slider("Test Position", testPosition, 0f, 1f);
+            if (testPosition != newValue)
+            {
+                testPosition = newValue;
+                EditorUtility.SetDirty(target);
+            }
+
+            showDirections = EditorGUILayout.Toggle("Show Directions", showDirections);
             
             curve = target as AdvancedCurve;
             EditorGUI.BeginChangeCheck();
@@ -108,7 +119,16 @@ namespace Hypnagogia.BezierCurve
                 p0 = p3;
             }
 
-            ShowDirections();
+            if (showDirections)
+                ShowDirections();
+            TestPositionDraw();
+        }
+
+        void TestPositionDraw()
+        {
+            var curve = target as AdvancedCurve;
+            var position = curve.GetPoint(testPosition);
+            Handles.ArrowHandleCap(0, position, Quaternion.identity, 0.25f, EventType.Repaint);
         }
 
         void ShowDirections()
