@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace CatlikeCoding.BezierCurves
+namespace Hypnagogia.BezierCurve
 {
     public class BezierSpline : MonoBehaviour
     {
@@ -9,6 +9,7 @@ namespace CatlikeCoding.BezierCurves
         [SerializeField] BezierControlPointMode[] modes;
         [SerializeField] bool loop;
 
+        
         public bool Loop
         {
             get { return loop; }

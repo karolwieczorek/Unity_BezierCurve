@@ -1,13 +1,12 @@
 ﻿#if UNITY_EDITOR
 
-using CatlikeCoding.BezierCurves;
 using UnityEditor;
 using UnityEngine;
 
-namespace ThirdParty.CatlikeCoding.BezierCurves.Editor
+namespace Hypnagogia.BezierCurve
 {
     [CustomEditor(typeof(BezierSpline))]
-    public class BezierSplineInspector : UnityEditor.Editor
+    public class BezierSplineInspector : Editor
     {
         const int stepsPerCurve = 10;
         const float directionScale = 0.5f;

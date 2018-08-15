@@ -1,4 +1,4 @@
-﻿namespace CatlikeCoding.BezierCurves
+﻿namespace Hypnagogia.BezierCurve
 {
     public enum BezierControlPointMode
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CatlikeCoding.BezierCurves
+namespace Hypnagogia.BezierCurve
 {
     public static class Bezier
     {
