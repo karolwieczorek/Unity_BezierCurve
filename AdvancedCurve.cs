@@ -265,7 +265,7 @@ namespace Hypnagogia.BezierCurve
 
         public void AddCurve()
         {
-            Nodes.Add(new Node());
+            NodeProvider.AddNode();
             Vector3 point = GetPosition(ControlPointCount - 1);
             point.x += 1f;
             SetPosition(ControlPointCount - 3, point);
@@ -288,8 +288,8 @@ namespace Hypnagogia.BezierCurve
         public void Reset()
         {
             Nodes.Clear();
-            Nodes.Add(new Node());
-            Nodes.Add(new Node());
+            NodeProvider.AddNode();
+            NodeProvider.AddNode();
         }
     }
 }

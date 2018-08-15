@@ -12,5 +12,10 @@ namespace Hypnagogia.BezierCurve
         {
             get { return nodes.Cast<INode>().ToList(); }
         }
+
+        public override void AddNode()
+        {
+            nodes.Add(new Node());
+        }
     }
 }
