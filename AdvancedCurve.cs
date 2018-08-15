@@ -124,18 +124,13 @@ namespace Hypnagogia.BezierCurve
 
         public void SetControlPointMode(int index, BezierControlPointMode mode)
         {
-            int modeIndex = (index + 1) / 3;
-            nodes[modeIndex].mode = mode;
-            if (loop)
+            var node = GetNode(index);
+            node.mode = mode;
+            
+            if (loop && (nodes.First() == node || nodes.Last() == node))
             {
-                if (modeIndex == 0)
-                {
-                    nodes[nodes.Count- 1].mode = mode;
-                }
-                else if (modeIndex == nodes.Count - 1)
-                {
-                    nodes[0].mode = mode;
-                }
+                nodes.First().mode = mode;
+                nodes.Last().mode = mode;
             }
 
             EnforceMode(index);
