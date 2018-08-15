@@ -7,6 +7,11 @@ namespace Hypnagogia.BezierCurve
 {
     public class AdvancedCurve : MonoBehaviour
     {
+        NodeProvider NodeProvider
+        {
+            get { return GetComponent<NodeProvider>(); }
+        }
+        
         [SerializeField] bool loop;
 
         [SerializeField] List<Node> nodes = new List<Node>();
@@ -19,7 +24,7 @@ namespace Hypnagogia.BezierCurve
                 loop = value;
                 if (value == true)
                 {
-                    nodes[nodes.Count - 1].mode = nodes[0].mode;
+                    Nodes[Nodes.Count - 1].Mode = Nodes[0].Mode;
                     SetControlPoint(0, GetPosition(0));
                 }
             }
@@ -27,7 +32,17 @@ namespace Hypnagogia.BezierCurve
 
         public int ControlPointCount
         {
-            get { return nodes.Count * 3 - 2; }
+            get { return Nodes.Count * 3 - 2; }
+        }
+
+        public int CurveCount
+        {
+            get { return (ControlPointCount - 1) / 3; }
+        }
+
+        public List<INode> Nodes
+        {
+            get { return NodeProvider.Nodes; }
         }
 
         public Vector3 GetControlPoint(int index)
@@ -80,41 +95,41 @@ namespace Hypnagogia.BezierCurve
 
         public Vector3 GetNodePosition(int index)
         {
-            return GetNode(index).point;
+            return GetNode(index).Point;
         }
 
         public Quaternion GetRotation(int index)
         {
-            return Quaternion.Euler(GetNode(index).rotationEuler);
+            return Quaternion.Euler(GetNode(index).RotationEuler);
         }
 
         public void SetRotation(int index, Quaternion rotation)
         {
-            GetNode(index).rotationEuler = rotation.eulerAngles;
+            GetNode(index).RotationEuler = rotation.eulerAngles;
         }
 
         public BezierControlPointMode GetControlPointMode(int index)
         {
-            return GetNode(index).mode;
+            return GetNode(index).Mode;
         }
 
-        Node GetNode(int index)
+        INode GetNode(int index)
         {
-            return nodes[(index + 1) / 3];
+            return Nodes[(index + 1) / 3];
         }
 
         Vector3 GetPosition(int index)
         {
             var node = GetNode(index);
-            var nodeIdex = nodes.IndexOf(node);
+            var nodeIdex = Nodes.IndexOf(node);
             var positionIndex = index - nodeIdex * 3;
 
             if (positionIndex == 0)
-                return node.point;
+                return node.Point;
             if (positionIndex == 1)
-                return node.controlPoint0;
+                return node.ControlPoint0;
             if (positionIndex == -1)
-                return node.controlPoint1;
+                return node.ControlPoint1;
 
             throw new Exception("node out of range");
         }
@@ -122,15 +137,15 @@ namespace Hypnagogia.BezierCurve
         void SetPosition(int index, Vector3 position)
         {
             var node = GetNode(index);
-            var nodeIdex = nodes.IndexOf(node);
+            var nodeIdex = Nodes.IndexOf(node);
             var positionIndex = index - nodeIdex * 3;
             
             if (positionIndex == 0)
-                node.point = position;
+                node.Point = position;
             else if (positionIndex == 1)
-                node.controlPoint0 = position;
+                node.ControlPoint0 = position;
             else if (positionIndex == -1)
-                node.controlPoint1 = position;
+                node.ControlPoint1 = position;
             else
                 throw new Exception("node out of range");
         }
@@ -143,12 +158,12 @@ namespace Hypnagogia.BezierCurve
         public void SetControlPointMode(int index, BezierControlPointMode mode)
         {
             var node = GetNode(index);
-            node.mode = mode;
+            node.Mode = mode;
             
-            if (loop && (nodes.First() == node || nodes.Last() == node))
+            if (loop && (Nodes.First() == node || Nodes.Last() == node))
             {
-                nodes.First().mode = mode;
-                nodes.Last().mode = mode;
+                Nodes.First().Mode = mode;
+                Nodes.Last().Mode = mode;
             }
 
             EnforceMode(index);
@@ -157,8 +172,8 @@ namespace Hypnagogia.BezierCurve
         void EnforceMode(int index)
         {
             int modeIndex = (index + 1) / 3;
-            BezierControlPointMode mode = nodes[modeIndex].mode;
-            if (mode == BezierControlPointMode.Free || !loop && (modeIndex == 0 || modeIndex == nodes.Count - 1))
+            BezierControlPointMode mode = Nodes[modeIndex].Mode;
+            if (mode == BezierControlPointMode.Free || !loop && (modeIndex == 0 || modeIndex == Nodes.Count - 1))
             {
                 return;
             }
@@ -202,11 +217,6 @@ namespace Hypnagogia.BezierCurve
             }
 
             SetPosition(enforcedIndex, middle + enforcedTangent);
-        }
-
-        public int CurveCount
-        {
-            get { return (ControlPointCount - 1) / 3; }
         }
 
         public Vector3 GetPoint(float t)
@@ -255,7 +265,7 @@ namespace Hypnagogia.BezierCurve
 
         public void AddCurve()
         {
-            nodes.Add(new Node());
+            Nodes.Add(new Node());
             Vector3 point = GetPosition(ControlPointCount - 1);
             point.x += 1f;
             SetPosition(ControlPointCount - 3, point);
@@ -264,24 +274,22 @@ namespace Hypnagogia.BezierCurve
             point.x += 1f;
             SetPosition(ControlPointCount - 1, point);
 
-            nodes[nodes.Count - 1].mode = nodes[nodes.Count - 2].mode;
+            Nodes[Nodes.Count - 1].Mode = Nodes[Nodes.Count - 2].Mode;
             EnforceMode(ControlPointCount - 4);
 
             if (loop)
             {
                 SetPosition(ControlPointCount - 1, GetPosition(0));
-                nodes[nodes.Count - 1].mode = nodes[0].mode;
+                Nodes[Nodes.Count - 1].Mode = Nodes[0].Mode;
                 EnforceMode(0);
             }
         }
 
         public void Reset()
         {
-            nodes = new List<Node>()
-            {
-                new Node(),
-                new Node()
-            };
+            Nodes.Clear();
+            Nodes.Add(new Node());
+            Nodes.Add(new Node());
         }
     }
 }

@@ -2,22 +2,17 @@
 
 namespace Hypnagogia.BezierCurve
 {
-    [System.Serializable]
-    public class Node : INode
+    public class TransformNode : MonoBehaviour, INode
     {
-        [SerializeField] Vector3 point;
+        [SerializeField] BezierControlPointMode mode;
         [SerializeField] Vector3 controlPoint0;
         [SerializeField] Vector3 controlPoint1;
-        [SerializeField] BezierControlPointMode mode;
-
-        // later
-        [SerializeField] Vector3 rotationEuler;
-        [SerializeField] float scale;
+        float scale;
 
         public Vector3 Point
         {
-            get { return point; }
-            set { point = value; }
+            get { return transform.localPosition;}
+            set { transform.localPosition = value; }
         }
 
         public Vector3 ControlPoint0
@@ -40,14 +35,14 @@ namespace Hypnagogia.BezierCurve
 
         public Vector3 RotationEuler
         {
-            get { return rotationEuler; }
-            set { rotationEuler = value; }
+            get { return transform.eulerAngles;}
+            set { transform.eulerAngles = value; }
         }
 
         public float Scale
         {
-            get { return scale; }
-            set { scale = value; }
+            get { return transform.localScale.x; }
+            set { transform.localScale = new Vector3(value,value,value); }
         }
     }
 }
