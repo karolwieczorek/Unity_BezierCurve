@@ -6,8 +6,8 @@ namespace Hypnagogia.BezierCurve
     public class Node
     {
         public Vector3 point;
-        public Vector3? controlPoint0;
-        public Vector3? controlPoint1;
+        public Vector3 controlPoint0;
+        public Vector3 controlPoint1;
         public BezierControlPointMode mode;
 
         // later

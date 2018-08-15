@@ -134,7 +134,7 @@ namespace Hypnagogia.BezierCurve
             }
 
             Handles.color = modeColors[(int) curve.GetControlPointMode(index)];
-            if (Handles.Button(point, handleRotation, size * handleSize, size * pickSize, Handles.DotCap))
+            if (Handles.Button(point, handleRotation, size * handleSize, size * pickSize, Handles.DotHandleCap))
             {
                 selectedIndex = index;
                 Repaint();

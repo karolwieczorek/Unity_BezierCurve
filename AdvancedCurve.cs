@@ -9,11 +9,6 @@ namespace Hypnagogia.BezierCurve
     {
         [SerializeField] Vector3[] points;
 
-//        [SerializeField]
-//        BezierControlPointMode[] modes
-//        {
-//            get { return nodes.Select(x => x.mode).ToArray(); }
-//        }
         [SerializeField] bool loop;
 
         [SerializeField] List<Node> nodes = new List<Node>();
@@ -87,7 +82,44 @@ namespace Hypnagogia.BezierCurve
 
         public BezierControlPointMode GetControlPointMode(int index)
         {
-            return nodes[(index + 1) / 3].mode;
+            return GetNode(index).mode;
+        }
+
+        Node GetNode(int index)
+        {
+            return nodes[(index + 1) / 3];
+        }
+
+        Vector3 GetPosition(int index)
+        {
+            var node = GetNode(index);
+            var nodeIdex = nodes.IndexOf(node);
+            var positionIndex = index - nodeIdex * 3;
+
+            if (positionIndex == 0)
+                return node.point;
+            if (positionIndex == 1)
+                return node.controlPoint0;
+            if (positionIndex == -1)
+                return node.controlPoint1;
+
+            throw new Exception("node out of range");
+        }
+
+        void SetPosition(int index, Vector3 position)
+        {
+            var node = GetNode(index);
+            var nodeIdex = nodes.IndexOf(node);
+            var positionIndex = index - nodeIdex * 3;
+            
+            if (positionIndex == 0)
+                node.point = position;
+            if (positionIndex == 1)
+                node.controlPoint0 = position;
+            if (positionIndex == -1)
+                node.controlPoint1 = position;
+            
+            throw new Exception("node out of range");
         }
 
         public void SetControlPointMode(int index, BezierControlPointMode mode)
@@ -220,7 +252,6 @@ namespace Hypnagogia.BezierCurve
             point.x += 1f;
             points[points.Length - 1] = point;
 
-//            Array.Resize(ref modes, modes.Length + 1);
             nodes[nodes.Count - 1].mode = nodes[nodes.Count - 2].mode;
             EnforceMode(points.Length - 4);
 
@@ -241,12 +272,7 @@ namespace Hypnagogia.BezierCurve
                 new Vector3(3f, 0f, 0f),
                 new Vector3(4f, 0f, 0f)
             };
-//            modes = new BezierControlPointMode[]
-//            {
-//                BezierControlPointMode.Free,
-//                BezierControlPointMode.Free
-//            };
-            
+
             nodes = new List<Node>()
             {
                 new Node(),
