@@ -11,7 +11,7 @@ namespace Hypnagogia.BezierCurve
         public BezierControlPointMode mode;
 
         // later
-        public Quaternion rotation;
+        public Vector3 rotationEuler;
         public float scale;
     }
 }

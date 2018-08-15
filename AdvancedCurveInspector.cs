@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -140,6 +141,7 @@ namespace Hypnagogia.BezierCurve
                 Repaint();
             }
 
+            
             if (selectedIndex == index)
             {
                 EditorGUI.BeginChangeCheck();
@@ -150,9 +152,49 @@ namespace Hypnagogia.BezierCurve
                     EditorUtility.SetDirty(curve);
                     curve.SetControlPoint(index, handleTransform.InverseTransformPoint(point));
                 }
+                
+                DrawTool(index);
             }
 
             return point;
+        }
+
+        void DrawTool(int index)
+        {
+            switch (Tools.current)
+            {
+                case Tool.View:
+                    break;
+                case Tool.Move:
+                    break;
+                case Tool.Rotate:
+                    DrawRotateTool(index);
+                    break;
+                case Tool.Scale:
+                    break;
+                case Tool.Rect:
+                    break;
+                case Tool.Transform:
+                    break;
+                case Tool.None:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        void DrawRotateTool(int index)
+        {
+            EditorGUI.BeginChangeCheck();
+            var nodeRotation = curve.GetRotation(index);
+            var worldNodePosition = handleTransform.TransformPoint(curve.GetNodePosition(index));
+            var newRotation = Handles.DoRotationHandle(nodeRotation, worldNodePosition);
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(curve, "Rotate Node");
+                EditorUtility.SetDirty(curve);
+                curve.SetRotation(index, newRotation);
+            }
         }
     }
 }

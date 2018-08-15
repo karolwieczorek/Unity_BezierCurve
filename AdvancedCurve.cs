@@ -78,6 +78,21 @@ namespace Hypnagogia.BezierCurve
             EnforceMode(index);
         }
 
+        public Vector3 GetNodePosition(int index)
+        {
+            return GetNode(index).point;
+        }
+
+        public Quaternion GetRotation(int index)
+        {
+            return Quaternion.Euler(GetNode(index).rotationEuler);
+        }
+
+        public void SetRotation(int index, Quaternion rotation)
+        {
+            GetNode(index).rotationEuler = rotation.eulerAngles;
+        }
+
         public BezierControlPointMode GetControlPointMode(int index)
         {
             return GetNode(index).mode;
