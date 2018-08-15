@@ -238,6 +238,25 @@ namespace Hypnagogia.BezierCurve
             return transform.TransformPoint(Bezier.GetPoint(GetPosition(i), GetPosition(i + 1), GetPosition(i + 2), GetPosition(i + 3), t));
         }
 
+        public Quaternion GetRotation(float t)
+        {
+            int i;
+            if (t >= 1f)
+            {
+                t = 1f;
+                i = ControlPointCount - 4;
+            }
+            else
+            {
+                t = Mathf.Clamp01(t) * CurveCount;
+                i = (int) t;
+                t -= i;
+                i *= 3;
+            }
+
+            return Quaternion.Lerp(GetRotation(i), GetRotation(i + 3), t);
+        }
+
         public Vector3 GetVelocity(float t)
         {
             int i;

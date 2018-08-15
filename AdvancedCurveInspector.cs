@@ -128,7 +128,8 @@ namespace Hypnagogia.BezierCurve
         {
             var curve = target as AdvancedCurve;
             var position = curve.GetPoint(testPosition);
-            Handles.ArrowHandleCap(0, position, Quaternion.identity, 0.25f, EventType.Repaint);
+            var rotation = curve.GetRotation(testPosition);
+            Handles.ArrowHandleCap(0, position, rotation, 0.25f, EventType.Repaint);
         }
 
         void ShowDirections()
