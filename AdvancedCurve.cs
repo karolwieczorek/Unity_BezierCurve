@@ -3,13 +3,12 @@ using UnityEngine;
 
 namespace Hypnagogia.BezierCurve
 {
-    public class BezierSpline : MonoBehaviour
+    public class AdvancedCurve : MonoBehaviour
     {
         [SerializeField] Vector3[] points;
         [SerializeField] BezierControlPointMode[] modes;
         [SerializeField] bool loop;
 
-        
         public bool Loop
         {
             get { return loop; }
